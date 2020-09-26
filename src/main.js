@@ -51,8 +51,19 @@ app.on('ready', () => {
 
 const menu = [
     {
-        label: "File",
+        label: "BRCODIFY",
         submenu: [
+            {
+                label: "Save...",
+                accelerator: "Ctrl+S",
+                // click: () => app.quit()
+            },
+            {
+                label: "Print...",
+                accelerator: "Ctrl+P",
+                // click: () => app.quit()
+            },
+            { type: 'separator' },
             {
                 label: "Exit",
                 accelerator: "Ctrl+W",
@@ -63,16 +74,13 @@ const menu = [
     {
         label: "Edit",
         submenu: [
-            {
-                label: "Print...",
-                accelerator: "Ctrl+P",
-                // click: () => app.quit()
-            }
+            { role: 'undo' }
         ]
     },
     {
         label: "About",
         submenu: [
+            { type: 'separator' },
             {
                 label: "ScotDev",
                 click: async () => {

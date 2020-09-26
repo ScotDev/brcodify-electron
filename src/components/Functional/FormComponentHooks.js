@@ -36,11 +36,39 @@ export default function FormComponentHooks() {
 
     const handleChange = () => {
         // e.preventDefault();
-        if (barcodeValue > 50) {
-            setbarcodeValue(defaultValue)
-            setMessage("Value cannot be lonfer than 50 characters");
+        if (barcodeValue.length > 49) {
+            // setbarcodeValue(defaultValue)
+            setMessage("Value cannot be longer than 50 characters");
             // this.setState({ BarcodeExists: false, barcodeValue: defaultValue, input: defaultValue, showWarning: true, errorMsg: 'Code cannot be longer than 50 characters' })
         }
+    }
+
+    const handleSubmit = e => {
+        const regexPattern = new RegExp("[^0-9]", "g");
+        e.preventDefault(e);
+
+        if (barcodeValue > 49) {
+            setMessage("Value cannot be longer than 50 characters");
+            // this.setState({ BarcodeExists: false, barcodeValue: defaultValue, input: defaultValue, showWarning: true, errorMsg: 'Code cannot be longer than 50 characters' })
+        } else if (barcodeValue.startsWith(' ')) {
+            setMessage("Code cannot start with a blank space");
+        }
+        // this.setState({ BarcodeExists: false, barcodeValue: defaultValue, input: defaultValue, showWarning: true, errorMsg: 'Code cannot start with a blank space' })
+        // } else if (this.state.format === ITF14 & this.state.input.length !== 13) {
+        //     this.setState({ BarcodeExists: false, barcodeValue: defaultValue, showWarning: true, errorMsg: 'An ITF-14 code must be exactly 13 digits' })
+        // } else if (this.state.format === ITF14 & regexPattern.test(this.state.input)) {
+        //     this.setState({ BarcodeExists: false, barcodeValue: defaultValue, showWarning: true, errorMsg: 'An ITF-14 code must only contain digits' })
+        // }
+        // else if (barcodeValue < 1 | barcodeValue === '') {
+        //     this.setState({ BarcodeExists: false, barcodeValue: defaultValue, input: defaultValue, showWarning: true, errorMsg: 'Please enter a value' })
+        //     this.generateBarcode(this.state.input);
+        // }
+        // else {
+        //     this.setState({ format: e.target.format.value, BarcodeExists: true, barcodeValue: this.state.input, input: barcodeValue.toString().toUpperCase(), showWarning: false, errorMsg: '' });
+        //     console.log(this.state.input, this.state.format, e.target.format.value)
+        //     this.generateBarcode(this.state.input, this.state.format);
+        //     document.title = `BRCODIFY | ${this.state.input}`
+        // }
     }
 
 
@@ -63,9 +91,11 @@ export default function FormComponentHooks() {
 
 
     return (
-        <Box p={4} display="flex" alignItems="center" justifyContent="center" flexDirection="column">
+        <Box p={4} display="flex" alignItems="center" justifyContent="center" flexDirection="column" width="30%">
 
-            <Flex as="form" w="100%" display="flex" alignItems="center" flexDirection="column">
+            <Flex as="form" w="100%" display="flex" alignItems="center" flexDirection="column" onSubmit={e => {
+                handleSubmit(e)
+            }}>
                 <PseudoBox w="80%" mb={10} p={4} display="flex" alignItems="center" justifyContent="space-between" flexDirection="column" border="2px" borderRadius="md" borderColor="cyan.50">
                     <Stack spacing={4} w="100%">
                         <Input
@@ -79,7 +109,7 @@ export default function FormComponentHooks() {
                             placeholder="Example code 12345"
                             autoFocus
                             autoComplete="off"
-                            maxLength="50"
+                            // maxLength="50"
                             onChange={e => {
                                 setbarcodeValue(e.target.value)
                             }}
@@ -101,14 +131,14 @@ export default function FormComponentHooks() {
                         </Select>
                     </Stack>
 
-                    {message && (<Text id="warning" color="red.500" fontSize="md">{message}</Text>)}
-                    <Button mt={6} size="lg" bg="pink.500" color="cyan.50" rounded="md">Generate</Button>
+                    {message && (<Text color="red.500" fontSize="md">{message}</Text>)}
+                    <Button mt={6} size="lg" bg="pink.500" color="cyan.50" rounded="md" onClick={(e) => { handleSubmit(e) }}>Generate</Button>
                 </PseudoBox>
             </Flex>
 
 
-            <PseudoBox border="1px" borderRadius="md" borderColor="gray.200" mb={10} maxWidth="95%" overflow="hidden" p={2}>
-                <Barcode value={barcodeValue} format={format} id="barcode" />
+            <PseudoBox border="1px" borderRadius="md" borderColor="gray.200" mb={10} overflow="hidden" p={2}>
+                <Barcode value={barcodeValue} format={format} width={2} id="barcode" />
             </PseudoBox>
 
             <ButtonGroup spacing={4} mb={10}>

@@ -5,7 +5,7 @@ import { Box, Text, Link } from '@chakra-ui/core'
 export default function Credits() {
     return (
         <Box textAlign="center" p={4}>
-            <Text fontSize="md" color="cyan.50">
+            <Text fontSize="md" color="cyan.50" >
                 <Text color="red.500">Change this if changing library</Text>
                 <Link href="https://github.com/ScotDev" isExternal>
                     Created by ScotDev </Link>
