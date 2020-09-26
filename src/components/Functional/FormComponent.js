@@ -19,15 +19,15 @@ export default class FormComponent extends Component {
         this.generateBarcode(this.state.barcodeValue, 'CODE128');
     }
 
-    printBarcode = () => {
-        const canvas = document.getElementById('barcode');
-        const img = canvas.toDataURL('image/png');
-        const url = "about:blank";
-        const newWindow = window.open(url, "_new");
-        newWindow.document.open();
-        newWindow.document.write(`<img src='${img}' onload='window.print()' />`)
-        console.log('Barcode printed:', this.state.barcodeValue);
-    }
+    // printBarcode = () => {
+    //     const canvas = document.getElementById('barcode');
+    //     const img = canvas.toDataURL('image/png');
+    //     const url = "about:blank";
+    //     const newWindow = window.open(url, "_new");
+    //     newWindow.document.open();
+    //     newWindow.document.write(`<img src='${img}' onload='window.print()' />`)
+    //     console.log('Barcode printed:', this.state.barcodeValue);
+    // }
 
     downloadBarcode = () => {
         const canvas = document.getElementById('barcode');
@@ -107,16 +107,16 @@ export default class FormComponent extends Component {
         const { showWarning, errorMsg } = this.state;
         return (
             <Box p={4} display="flex" alignItems="center" justifyContent="center" flexDirection="column">
-                <Flex as="form" onSubmit={this.handleSubmit}>
-                    <PseudoBox m={4} p={4} display="flex" alignItems="center" justifyContent="space-between" flexDirection="column" border="2px" borderRadius="md" borderColor="cyan.50">
-                        <Stack spacing={4}>
+                <Flex as="form" onSubmit={this.handleSubmit} w="100%" display="flex" alignItems="center" flexDirection="column">
+                    <PseudoBox w="80%" mb={10} p={4} display="flex" alignItems="center" justifyContent="space-between" flexDirection="column" border="2px" borderRadius="md" borderColor="cyan.50">
+                        <Stack spacing={4} w="100%">
                             <Input
+
                                 focusBorderColor="pink.500"
                                 bg="cyan.50"
                                 variant="outline"
                                 size="lg"
                                 type="text"
-                                className="form-field text-input"
                                 name="input"
                                 placeholder="Example code 12345"
                                 autoFocus
@@ -139,17 +139,17 @@ export default class FormComponent extends Component {
                             </Select>
                         </Stack>
 
-                        {showWarning && (<div id="warning" className="warning">{errorMsg}</div>)}
+                        {showWarning && (<Text id="warning" color="red.500" fontSize="md">{errorMsg}</Text>)}
                         <Button mt={6} size="lg" bg="pink.500" color="cyan.50" rounded="md">Generate</Button>
                     </PseudoBox>
                 </Flex>
-                <PseudoBox border="1px" borderRadius="md" borderColor="gray.200" mb={6}>
+                <PseudoBox border="1px" borderRadius="md" borderColor="gray.200" mb={10} maxWidth="95%">
                     <canvas id="barcode"></canvas>
                 </PseudoBox>
 
 
 
-                <ButtonGroup spacing={4}>
+                <ButtonGroup spacing={4} mb={10}>
                     <Button bg="pink.500" size="lg" color="cyan.50">
                         Print
   </Button>
@@ -159,11 +159,6 @@ export default class FormComponent extends Component {
 
                 </ButtonGroup>
 
-
-                <div className="btn-group">
-                    <button className="btn btn--icon-only" onClick={this.printBarcode}><i className="btn__icon ri-printer-line"></i></button>
-                    <button className="btn btn--icon-only" onClick={this.downloadBarcode}><i className="btn__icon ri-download-line"></i></button>
-                </div>
             </Box>
         )
     }

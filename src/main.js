@@ -1,8 +1,9 @@
-const electron = require('electron');
+
+const { app, Menu, BrowserWindow, globalShortcut } = require('electron');
 // Module to control application life.
-const app = electron.app;
+// const app = electron.app;
 // Module to create native browser window.
-const BrowserWindow = electron.BrowserWindow;
+// const BrowserWindow = electron.BrowserWindow;
 
 const path = require('path');
 const url = require('url');
@@ -13,7 +14,15 @@ let mainWindow;
 
 function createWindow() {
     // Create the browser window.
-    mainWindow = new BrowserWindow({ width: 1000, height: 800 });
+    mainWindow = new BrowserWindow({
+        width: 800,
+        height: 900,
+        fullscreenable: false,
+        // resizable: false,
+        title: "BRCODIFY",
+        icon: `${__dirname}/public/favicon.ico`
+    });
+
 
     // and load the index.html of the app.
     const startUrl = "http://localhost:3000/" || url.format({
@@ -21,38 +30,76 @@ function createWindow() {
         protocol: 'file:',
         slashes: true
     });
+    // const startUrl = 'https://thequarantinemixtape.com/';
+
+    // mainWindow.loadFile('/../build/index.html')
 
     mainWindow.loadURL(startUrl);
 
-    // Open the DevTools.
-    // mainWindow.webContents.openDevTools();
-
-    // Emitted when the window is closed.
     mainWindow.on('closed', function () {
-        // Dereference the window object, usually you would store windows
-        // in an array if your app supports multi windows, this is the time
-        // when you should delete the corresponding element.
         mainWindow = null
     })
 }
 
-// This method will be called when Electron has finished
-// initialization and is ready to create browser windows.
-// Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', () => {
+    createWindow()
+    globalShortcut.register("Ctrl+R", () => mainWindow.reload())
+    globalShortcut.register("Ctrl+I", () => mainWindow.toggleDevTools())
+}
+);
 
-// Quit when all windows are closed.
+
+const menu = [
+    {
+        label: "File",
+        submenu: [
+            {
+                label: "Exit",
+                accelerator: "Ctrl+W",
+                click: () => app.quit()
+            }
+        ]
+    },
+    {
+        label: "Edit",
+        submenu: [
+            {
+                label: "Print...",
+                accelerator: "Ctrl+P",
+                // click: () => app.quit()
+            }
+        ]
+    },
+    {
+        label: "About",
+        submenu: [
+            {
+                label: "ScotDev",
+                click: async () => {
+                    const { shell } = require('electron')
+                    await shell.openExternal('https://www.scotdev.uk/')
+                }
+            }
+        ]
+    }
+
+]
+
+const mainMenu = Menu.buildFromTemplate(menu)
+Menu.setApplicationMenu(mainMenu)
+
+
+
+
+
 app.on('window-all-closed', function () {
-    // On OS X it is common for applications and their menu bar
-    // to stay active until the user quits explicitly with Cmd + Q
     if (process.platform !== 'darwin') {
         app.quit()
     }
+    globalShortcut.unregisterAll()
 });
 
 app.on('activate', function () {
-    // On OS X it's common to re-create a window in the app when the
-    // dock icon is clicked and there are no other windows open.
     if (mainWindow === null) {
         createWindow()
     }
