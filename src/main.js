@@ -15,8 +15,8 @@ let mainWindow;
 function createWindow() {
     // Create the browser window.
     mainWindow = new BrowserWindow({
-        width: 800,
-        height: 900,
+        width: 750,
+        height: 1000,
         fullscreenable: false,
         // resizable: false,
         title: "BRCODIFY",
@@ -51,7 +51,7 @@ app.on('ready', () => {
 
 const menu = [
     {
-        label: "BRCODIFY",
+        label: "File",
         submenu: [
             {
                 label: "Save...",
@@ -95,9 +95,6 @@ const menu = [
 
 const mainMenu = Menu.buildFromTemplate(menu)
 Menu.setApplicationMenu(mainMenu)
-
-
-
 
 
 app.on('window-all-closed', function () {
