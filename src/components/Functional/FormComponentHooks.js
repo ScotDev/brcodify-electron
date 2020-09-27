@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
+// This barcode library is a react wrapper for the JSbarcode library
 import Barcode from "react-hooks-barcode";
 import FileSaver from 'file-saver';
 
@@ -10,6 +11,7 @@ export default function FormComponentHooks() {
 
     const [format, setformat] = useState("CODE128")
     const [barcodeValue, setbarcodeValue] = useState("EXAMPLE CODE 12345")
+    const [inputValue, setinputValue] = useState("EXAMPLE CODE 12345")
     const [message, setMessage] = useState(null);
 
     const auto = '(Auto)';
@@ -34,68 +36,97 @@ export default function FormComponentHooks() {
         alert("download")
     }
 
-    const handleChange = () => {
-        // e.preventDefault();
-        if (barcodeValue.length > 49) {
-            // setbarcodeValue(defaultValue)
-            setMessage("Value cannot be longer than 50 characters");
-            // this.setState({ BarcodeExists: false, barcodeValue: defaultValue, input: defaultValue, showWarning: true, errorMsg: 'Code cannot be longer than 50 characters' })
-        }
-    }
+    // const handleChange = () => {
+    //     console.log("Handlechange ran")
+    //     if (inputValue.length > 49) {
+    //         console.log("inputValue too long")
+    //         setMessage("Value cannot be longer than 50 characters");
+    //         setbarcodeValue(defaultValue)
+    //         // this.setState({ BarcodeExists: false, barcodeValue: defaultValue, input: defaultValue, showWarning: true, errorMsg: 'Code cannot be longer than 50 characters' })
+    //     } else if (inputValue.startsWith(' ')) {
+    //         console.log("inputValue starts with blank space")
+    //         setMessage("Code cannot start with a blank space");
+    //         setbarcodeValue(defaultValue)
+    //     }
+    // }
 
     const handleSubmit = e => {
         const regexPattern = new RegExp("[^0-9]", "g");
         e.preventDefault(e);
 
-        if (barcodeValue > 49) {
+        // setbarcodeValue(inputValue)
+
+        if (inputValue.length > 50) {
             setMessage("Value cannot be longer than 50 characters");
-            // this.setState({ BarcodeExists: false, barcodeValue: defaultValue, input: defaultValue, showWarning: true, errorMsg: 'Code cannot be longer than 50 characters' })
-        } else if (barcodeValue.startsWith(' ')) {
-            setMessage("Code cannot start with a blank space");
+            setbarcodeValue(defaultValue)
+        } else if (inputValue.startsWith(' ')) {
+            setMessage("Value cannot start with a blank space");
+            setbarcodeValue(defaultValue)
+        } else if (format === ITF14 & inputValue.length !== 13) {
+            setMessage("An ITF-14 code must be exactly 13 digits")
+        } else if (format === ITF14 & inputValue.length !== 13) {
+            setbarcodeValue(defaultValue)
+            setMessage("'An ITF-14 code must be exactly 13 digits'")
+        } else if (format === ITF14 & regexPattern.test(inputValue)) {
+            setbarcodeValue(defaultValue)
+        } else {
+            setbarcodeValue(inputValue)
+            setMessage(null)
+            document.title = `BRCODIFY | ${barcodeValue}`
         }
+
+
         // this.setState({ BarcodeExists: false, barcodeValue: defaultValue, input: defaultValue, showWarning: true, errorMsg: 'Code cannot start with a blank space' })
-        // } else if (this.state.format === ITF14 & this.state.input.length !== 13) {
+        // else if (format === ITF14 & inputValue.length !== 13) {
         //     this.setState({ BarcodeExists: false, barcodeValue: defaultValue, showWarning: true, errorMsg: 'An ITF-14 code must be exactly 13 digits' })
-        // } else if (this.state.format === ITF14 & regexPattern.test(this.state.input)) {
+        // } else if (this.state.format === ITF14 & regexPattern.test(inputValue)) {
         //     this.setState({ BarcodeExists: false, barcodeValue: defaultValue, showWarning: true, errorMsg: 'An ITF-14 code must only contain digits' })
         // }
         // else if (barcodeValue < 1 | barcodeValue === '') {
         //     this.setState({ BarcodeExists: false, barcodeValue: defaultValue, input: defaultValue, showWarning: true, errorMsg: 'Please enter a value' })
-        //     this.generateBarcode(this.state.input);
+        //     this.generateBarcode(inputValue);
         // }
         // else {
-        //     this.setState({ format: e.target.format.value, BarcodeExists: true, barcodeValue: this.state.input, input: barcodeValue.toString().toUpperCase(), showWarning: false, errorMsg: '' });
-        //     console.log(this.state.input, this.state.format, e.target.format.value)
-        //     this.generateBarcode(this.state.input, this.state.format);
-        //     document.title = `BRCODIFY | ${this.state.input}`
+        //     this.setState({ format: e.target.format.value, BarcodeExists: true, barcodeValue: inputValue, input: barcodeValue.toString().toUpperCase(), showWarning: false, errorMsg: '' });
+        //     console.log(inputValue, this.state.format, e.target.format.value)
+        //     this.generateBarcode(inputValue, this.state.format);
+        //     document.title = `BRCODIFY | ${inputValue}`
         // }
     }
 
 
     useEffect(
         () => {
-            handleChange()
-            if (!barcodeValue) {
-                setMessage("Please enter a value");
-            } else setMessage(null);
-        },
-        [barcodeValue]
-    );
-    // useEffect(
-    //     () => {
-    //         setMessage(`Format changed to ${format}`);
 
-    //     },
-    //     [format]
-    // );
+            if (!inputValue) {
+                setMessage("Please enter a value");
+                setbarcodeValue(defaultValue)
+                setinputValue(defaultValue)
+            } else if (inputValue.length > 50) {
+                console.log("Value too long")
+                setMessage("Value cannot be longer than 50 characters");
+                setbarcodeValue(defaultValue)
+                // setinputValue(defaultValue)
+                // this.setState({ BarcodeExists: false, barcodeValue: defaultValue, input: defaultValue, showWarning: true, errorMsg: 'Code cannot be longer than 50 characters' })
+            } else if (inputValue.startsWith(' ')) {
+                console.log("Value cannot start with blank space")
+                setMessage("Value cannot start with a blank space");
+                setbarcodeValue(defaultValue)
+                // setinputValue(defaultValue)
+            } else {
+                setMessage(null)
+            }
+        },
+        [inputValue]
+    );
 
 
     return (
         <Box p={4} display="flex" alignItems="center" justifyContent="center" flexDirection="column" width="30%">
 
-            <Flex as="form" w="100%" display="flex" alignItems="center" flexDirection="column" onSubmit={e => {
+            <Flex as="form" w="100%" display="flex" alignItems="center" flexDirection="column" onSubmit={e =>
                 handleSubmit(e)
-            }}>
+            }>
                 <PseudoBox w="80%" mb={10} p={4} display="flex" alignItems="center" justifyContent="space-between" flexDirection="column" border="2px" borderRadius="md" borderColor="cyan.50">
                     <Stack spacing={4} w="100%">
                         <Input
@@ -109,10 +140,10 @@ export default function FormComponentHooks() {
                             placeholder="Example code 12345"
                             autoFocus
                             autoComplete="off"
-                            // maxLength="50"
-                            onChange={e => {
-                                setbarcodeValue(e.target.value)
-                            }}
+                            maxLength="51"
+                            onChange={e =>
+                                setinputValue(e.target.value.toString().toUpperCase())
+                            }
                         />
                         <Select name="format" placeholder="Select barcode type" variant="outline" focusBorderColor="pink.500" bg="cyan.50" size="lg" onChange={e => { setformat(e.target.value) }}>
 
